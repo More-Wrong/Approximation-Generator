@@ -30,10 +30,7 @@ The generator can be run to produce different file sizes by limiting the maximum
   - \+ for addition and subtraction
   - \/ for invert
   - \- for negate
-  - 1...9 for the relevant number
-  - 0 for 10
-  - L for 11
-  - P for 13
+  - d for integers
   - ! for factorial
   - | for tetration
   - q for square
