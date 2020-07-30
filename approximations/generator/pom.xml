@@ -31,7 +31,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>com.wittsfamily.approximations.rest.Application</mainClass>
+							<mainClass>com.wittsfamily.approximations.generator.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>

@@ -236,10 +236,10 @@ class UnicodeRenderer{
 			}else{
 				return "\u221C("+b+")";
 			}
-		}else if(a.length == 1){
-			return a+"^(1/"+b+")";
+		}else if(b.length == 1){
+			return b+"^(1/"+a+")";
 		}else{
-			return "("+a+")^(1/"+b+")";
+			return "("+b+")^(1/"+a+")";
 		}
 	}
 	power(a, b){
