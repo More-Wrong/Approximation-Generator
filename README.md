@@ -1,6 +1,6 @@
 # Approximation-Generator
 
-This is a program to generate expressions, given their value, relying on a large file containing expressions, in numeric order.
+This is a program to generate expressions, given their value, relying on a large file containing expressions in numeric order.
 
 There are several parts to it:
   - The generator: this creates the file, given options on size, and values to contain
@@ -41,3 +41,5 @@ The generator can be run to produce different file sizes by limiting the maximum
 
 The server-side-rest system uses Spring to create a simple rest interface, returning the results of a lookup.
 The website then uses JavaScript to process the results. The website also self documents here.
+
+The options for the generator are heavily inspired by [RIES](https://mrob.com/pub/ries/index.html), which is a similar thing to this, only without the backing file.
