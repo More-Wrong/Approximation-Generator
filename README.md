@@ -26,10 +26,10 @@ The generator can be run to produce different file sizes by limiting the maximum
   - h for sinh (H for arsinh)
   - i for cosh (I for arcosh)
   - j for tanh (J for artanh)
-  - * for multiply and division
-  - + for addition and subtraction
-  - / for invert
-  - - for negate
+  - \* for multiply and division
+  - \+ for addition and subtraction
+  - \/ for invert
+  - \- for negate
   - 1...9 for the relevant number
   - 0 for 10
   - L for 11
