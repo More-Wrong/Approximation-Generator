@@ -18,6 +18,7 @@ The finder accepts the -f option for the large source file, the -n option for th
 The generator can be run to produce different file sizes by limiting the maximum cost, a cost of around 45 gives 800Mb of file. The -f option specifies the target file. The -n option forces it to ignore certain functions or values: 
   - e for e and e^a (E for ln)
   - ^ for a^b and e^a
+  - L for log
   - p for pi
   - g for golden ratio
   - s for sin (S for arcsin)
