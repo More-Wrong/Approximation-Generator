@@ -28,8 +28,8 @@ The generator can be run to produce different file sizes by limiting the maximum
   - j for tanh (J for artanh)
   - \* for multiply and division
   - \+ for addition and subtraction
-  - \/ for invert
-  - \- for negate
+  - \/ for invert and divide
+  - \- for negate and subtract
   - d for integers
   - ! for factorial
   - | for tetration
