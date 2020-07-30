@@ -129,7 +129,6 @@ async function replaceSingle(candidates, internalTarget, child, layers, attachTo
 			}
 		}).then(e=>{
 			if (bestRep != null) {
-				console.log("replacement improvement found");
 				return attachToParent(bestRep);
 			} else {
 				return [];

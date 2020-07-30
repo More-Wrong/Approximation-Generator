@@ -3,18 +3,18 @@
  */
 class LaTeXRenderer{
 	render(cleanedExpression, target, uncleaned, sfNum){
-		var targetStr = target.toSD(sfNum).toString().replace("e+", "\u00D710^{").replace("e-", "\u00D710^{-");
+		var targetStr = target.toPrecision(sfNum).toString().replace("e+", "\u00D710^{").replace("e-", "\u00D710^{-");
 		if(targetStr.includes("{")){
 			targetStr+="}";
 		}
-		var actualStr = uncleaned.getPrecise().toSD(sfNum).toString().replace("e+", "\u00D710^{").replace("e-", "\u00D710^{-");
+		var actualStr = uncleaned.getPrecise().toPrecision(sfNum).toString().replace("e+", "\u00D710^{").replace("e-", "\u00D710^{-");
 		if(actualStr.includes("{")){
 			actualStr+="}";
 		}
 		
 		var expStr = cleanedExpression.toRendered(this);
 		return "<div class=\"maths\">\\(\\displaystyle{"+targetStr + "\\approx " + expStr + "}\\)</div>"+
-			"<div class=\"maths\">\\(\\displaystyle{"+actualStr + " = " + expStr + "}\\)</div>";
+			"<div class=\"maths-actual\">\\(\\displaystyle{"+actualStr + " = " + expStr + "}\\)</div>";
 	}
 	plus(){
 		return "+";

@@ -6,11 +6,11 @@ input.addEventListener('input', updateValue);
 var isRunningUpdate = false;
 var shouldReRun = false;
 
-function updateValue(e) {
+function updateValue() {
 	var str = input.value.replace("x", "*").replace("\u00D7", "*").replace("\u2062", "*");
-	str = str.replace("\u2212", "-").replace("\u002D", "-").replace("\uFE63", "-").replace("\uFF0D", "-");
+	str = str.replace(/\u2212/g, "-").replace(/\u002D/g, "-").replace(/\uFE63/g, "-").replace(/\uFF0D/g, "-");
 	str = str.replace(/ /g, "").replace(/,/g, "").replace("*10^", "*10").replace("*10", "e");
-	if(isFinite(Number(str))){
+	if(str.length>0&&isFinite(Number(str))){
 		var sfStr = str.replace(".", "").replace(/^0*/, "").replace(/e.*$/, "");
 		var sfNum = sfStr.length;
 		var num = new Decimal(str);
@@ -32,8 +32,8 @@ function updatePrecise(){
 	var str = input.value.replace("x", "*").replace("\u00D7", "*").replace("\u2062", "*");
 	str = str.replace(/\u2212/g, "-").replace(/\u002D/g, "-").replace(/\uFE63/g, "-").replace(/\uFF0D/g, "-");
 	str = str.replace(/ /g, "").replace(/,/g, "").replace("*10^", "*10").replace("*10", "e");
-	if(isFinite(Number(str))){
-		var sfStr = str.replace(".", "");
+	if(str.length>0&&isFinite(Number(str))){
+		var sfStr = str.replace(".", "").replace(/^0*/, "").replace(/e.*$/, "");
 		var sfNum = sfStr.length;
 		var num = new Decimal(str);
 		isRunningUpdate = true;
@@ -82,7 +82,7 @@ function displayResults(found, num, easy, sfNum){
 				sfStr = "To "+err.log().trunc()+" s.f.";
 				precisionStr = "1 part in "+accuracyStr;
 			}
-			ht2 += "<button type=\"button\" class=\"swap-expression\" title=\"Show calculated value for comparison\">⇅</button>"+ltxStr+"<br>"+sfStr + "<button type=\"button\" class=\"collapsible\" title=\"More info on expression\"><img src=\"/approx-content/downarrow.svg\" alt=\"v\"></button><div class=\"content\">"+
+			ht2 += "<button type=\"button\" class=\"reveal-other-expression\" title=\"Show calculated value for comparison\">⇅</button>"+ltxStr+"<br>"+sfStr + "<button type=\"button\" class=\"collapsible\" title=\"More info on expression\"><img src=\"/approx-content/downarrow.svg\" alt=\"v\"></button><div class=\"content\">"+
 			precisionStr+"<br>Expression value: "+precise+"<br>Unicode version: "+new UnicodeRenderer().render(clex, num)+"<br>Uncleaned: "+ex+"</div><hr>";
 		}
 	});
@@ -108,17 +108,17 @@ function displayResults(found, num, easy, sfNum){
 		    }
 		  });
 		}
-	var swapExp = document.getElementsByClassName("swap-expression");
+	var swapExp = document.getElementsByClassName("reveal-other-expression");
 	for (i = 0; i < swapExp.length; i++) {
 		swapExp[i].addEventListener("click", function() {
 		    this.classList.toggle("active");
-		    var content = this.nextElementSibling;
-		    if (content.style.display === "inline") {
+		    var content = this.nextElementSibling.nextElementSibling;
+		    if (content.style.display === "block") {
+		    	this.innerHTML="↓";
 				content.style.display = "none";
-				content.nextElementSibling.style.display = "inline";
 		    } else {
-	    		content.style.display = "inline";
-				content.nextElementSibling.style.display = "none";
+		    	this.innerHTML="↑";
+				content.style.display = "block";
 		    }
 		  });
 		}
