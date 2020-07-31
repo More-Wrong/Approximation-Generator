@@ -8,17 +8,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
 import com.wittsfamily.approximations.generator.Parser;
 
-@Component
 public class FileRangeFinder {
     private final FileSearcher searcher;
     private final Parser p = new Parser();
 
-    public FileRangeFinder(@Value("${file}") String file) throws FileNotFoundException {
+    public FileRangeFinder(String file) throws FileNotFoundException {
         this.searcher = new FileSearcher(new File(file));
     }
 
