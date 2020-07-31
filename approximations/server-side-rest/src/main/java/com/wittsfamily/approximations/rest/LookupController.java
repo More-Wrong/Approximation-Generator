@@ -23,14 +23,13 @@ public class LookupController {
     public LookupController(LookupFiles ls) throws FileNotFoundException {
         finders = new HashMap<>(ls.getFiles().size());
         for (LookupFile f : ls.getFiles()) {
-            System.out.println(f.getName() + ": " + f.getLocation());
             finders.put(f.getName(), new FileRangeFinder(f.getLocation()));
         }
     }
 
     @RequestMapping("lookup/{value}")
     public Map<String, List<byte[]>> find(@PathVariable(value = "value") double value, @RequestParam(name = "range", required = false, defaultValue = "1") int range,
-            @RequestParam(name = "range", required = false, defaultValue = "normal") String targetFile) throws IOException, ParseException {
+            @RequestParam(name = "target", required = false, defaultValue = "normal") String targetFile) throws IOException, ParseException {
         try {
             return Map.of("values", finders.get(targetFile).find(value, range));
         } catch (Exception e) {

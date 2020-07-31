@@ -194,7 +194,7 @@ function callOnAllPromiseArrays(target, func){
 
 async function fetchExpressionsFor(value, num){		// returns
 												// Future<List<Expression>>
-	var json = await fetch("/approx/lookup/"+value+"?range="+num).then(resp=>resp.json());
+	var json = await fetch("/approx/lookup/"+value+"?range="+num+"&target="=targetFileSelector.value).then(resp=>resp.json());
 	var vals = [];
 	if(json.values){
 		vals = json.values.map(e=>parseExpression(_base64ToArrayBuffer(e)));

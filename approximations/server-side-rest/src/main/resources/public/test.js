@@ -1,5 +1,5 @@
 var text2 = document.getElementById("text2");
-
+var targetFileSelector = document.getElementById("targetSelector");
 var input =  document.getElementById("numInput");
 
 input.addEventListener('input', updateValue);
