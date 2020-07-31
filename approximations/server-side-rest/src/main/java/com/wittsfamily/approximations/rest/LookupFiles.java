@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties
+@ConfigurationProperties(prefix = "lookup")
 @Configuration
 public class LookupFiles {
     private List<LookupFile> files;
@@ -26,7 +26,7 @@ public class LookupFiles {
         this.files = files;
     }
 
-    @ConfigurationProperties(prefix = "files")
+    @ConfigurationProperties(prefix = "lookup.files")
     @Configuration
     public static class LookupFile {
         private String name;

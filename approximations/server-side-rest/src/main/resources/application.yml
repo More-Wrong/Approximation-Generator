@@ -1,18 +1,19 @@
-files:
-   - name: normal
-     location: approx-data
-   - name: small
-     location: approx-small
-   - name: "no-e"
-     location: approx-no-e
-   - name: "no-pi"
-     location: approx-no-pi
-   - name: "no-ints"
-     location: approx-no-ints
-   - name: "no-pi-e-gr"
-     location: approx-no-pi-e-gr
-   - name: "rational"
-     location: approx-rational
+lookup:
+  files:
+    - name: normal
+      location: approx-data
+    - name: small
+       location: approx-small
+    - name: "no-e"
+      location: approx-no-e
+    - name: "no-pi"
+      location: approx-no-pi
+    - name: "no-ints"
+      location: approx-no-ints
+    - name: "no-pi-e-gr"
+      location: approx-no-pi-e-gr
+    - name: "rational"
+      location: approx-rational
 
 server:
    port : 8080
