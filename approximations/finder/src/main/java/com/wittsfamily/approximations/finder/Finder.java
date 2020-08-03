@@ -179,7 +179,9 @@ public class Finder {
 
         boolean useCSS = true;
         File f = new File(file);
-        f.getParentFile().mkdirs();
+        if (f.getParentFile() != null) {
+            f.getParentFile().mkdirs();
+        }
         FileOutputStream svgs = new FileOutputStream(f);
         Writer out = new OutputStreamWriter(svgs, "UTF-8");
         g2.stream(out, useCSS);
