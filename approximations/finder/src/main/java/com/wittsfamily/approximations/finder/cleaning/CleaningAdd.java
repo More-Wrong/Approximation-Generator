@@ -38,13 +38,28 @@ public class CleaningAdd implements CleaningExpression {
     @Override
     public boolean cleanOne(boolean convertPowers) {
         boolean hasDoneAnything = false;
+        List<CleaningExpression> toAdd = new ArrayList<>();
         for (Iterator<CleaningExpression> iterator = expressions.iterator(); iterator.hasNext();) {
             CleaningExpression child = iterator.next();
             if (child.getType() == CleaningExpressionType.INTEGER && ((CleaningInteger) child).asInt() == 0) {
                 iterator.remove();
                 hasDoneAnything = true;
+            } else if (child.getType() == CleaningExpressionType.ADD) {
+                for (CleaningExpression cc : child.getExpressions()) {
+                    toAdd.add(cc);
+                }
+                iterator.remove();
+            } else if (child.getType() == CleaningExpressionType.NEGATE && child.getExpressions().get(0).getType() == CleaningExpressionType.ADD) {
+                for (CleaningExpression cc : child.getExpressions().get(0).getExpressions()) {
+                    toAdd.add(new CleaningNegate(cc));
+                }
+                iterator.remove();
             }
         }
+        for (CleaningExpression newce : toAdd) {
+            newce.setParent(this);
+        }
+        expressions.addAll(toAdd);
         if (expressions.size() == 1) {
             parent.replaceChild(this, expressions.get(0));
             return true;

@@ -30,12 +30,27 @@ class CleaningAdd {
 
 	cleanOne(convertPowers) {
 		var hasDoneAnything = false;
+		var toAdd = [];
 		for (var i = 0; i < this.expressions.length; i++) {
 			var child = this.expressions[i];
 			if (child.getType() == CleaningExpressionType.INTEGER && child.asInt() == 0) {
 				this.expressions.splice(i--, 1);
 				hasDoneAnything = true;
-			}
+			} else if (child.getType() == CleaningExpressionType.ADD) {
+                for (var cc of child.getExpressions()) {
+                    toAdd.push(cc);
+                }
+				this.expressions.splice(i--, 1);
+            } else if (child.getType() == CleaningExpressionType.NEGATE && child.child.getType() == CleaningExpressionType.ADD) {
+                for (var cc of child.child.getExpressions()) {
+                    toAdd.push(new CleaningNegate(cc));
+                }
+				this.expressions.splice(i--, 1);
+            }
+		}
+		for(var newce of toAdd){
+			newce.setParent(this);
+			this.expressions.push(newce);
 		}
 		if (this.expressions.length == 1) {
 			this.parent.replaceChild(this, this.expressions[0]);

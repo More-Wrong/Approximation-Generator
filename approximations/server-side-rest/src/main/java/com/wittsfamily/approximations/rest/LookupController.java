@@ -30,6 +30,9 @@ public class LookupController {
     @RequestMapping("lookup/{value}")
     public Map<String, List<byte[]>> find(@PathVariable(value = "value") double value, @RequestParam(name = "range", required = false, defaultValue = "1") int range,
             @RequestParam(name = "target", required = false, defaultValue = "normal") String targetFile) throws IOException, ParseException {
+        if (!finders.containsKey(targetFile)) {
+            return Map.of();
+        }
         try {
             return Map.of("values", finders.get(targetFile).find(value, range));
         } catch (Exception e) {

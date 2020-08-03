@@ -29,6 +29,11 @@
 			<artifactId>spring-boot-starter-web</artifactId>
 			<version>2.1.6.RELEASE</version>
 		</dependency>
+        <dependency>
+            <groupId>org.apfloat</groupId>
+            <artifactId>apfloat</artifactId>
+            <version>1.9.1</version>
+        </dependency>
 	</dependencies>
 	<build>
 		<plugins>
