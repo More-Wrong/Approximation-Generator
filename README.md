@@ -1,12 +1,12 @@
 # Approximation-Generator
 
-This is a program to generate expressions, given their value, relying on a large file containing expressions in numeric order.
+This is a program to generate expressions, given their value, relying on a large file containing sorted expressions in ascending order of value.
 
 There are several parts to it:
   - The generator: this creates the file, given options on size, and values to contain
   - The finder: this can search the file, and find expressions for a given number, as well as 'optimise' those expressions, to make them closer to the target value.
   - The server-side-rest interface: this provides a rest API for a website to connect to, providing lookups on the files.
-  - The website: a website based on the contained JavaScript, providing a pretty ui.
+  - The [website](https://www.not-entirely-wrong.com/approx/): a website based on the contained JavaScript, providing a pretty ui.
 
 The JavaScript relies heavily on the [decimal.js](https://github.com/MikeMcl/decimal.js) library, which is included here (to make the website work).
 The rest of the website is based on wordpress, and none of it is included here, for security reasons, although a basic html page is present, sufficient to make it work.
@@ -38,6 +38,6 @@ The generator can be run to produce different file sizes by limiting the maximum
   - Q for square root
 
 The server-side-rest system uses Spring to create a simple rest interface, returning the results of a lookup.
-The website then uses JavaScript to process the results. The website also self documents here.
+The website then uses JavaScript to process the results. The website also self documents [here](https://www.not-entirely-wrong.com/approximation-generator-documentation/).
 
 The options for the generator are heavily inspired by [RIES](https://mrob.com/pub/ries/index.html), which is a similar thing to this, only without the backing file.
