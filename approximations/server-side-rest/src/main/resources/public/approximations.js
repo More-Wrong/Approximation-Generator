@@ -1,4 +1,4 @@
-var text2 = document.getElementById("text2");
+var results = document.getElementById("results");
 var targetFileSelector = document.getElementById("targetSelector");
 var input =  document.getElementById("numInput");
 
@@ -11,12 +11,13 @@ function updateValue() {
 	str = str.replace(/\u2212/g, "-").replace(/\u002D/g, "-").replace(/\uFE63/g, "-").replace(/\uFF0D/g, "-");
 	str = str.replace(/ /g, "").replace(/,/g, "").replace("*10^", "*10").replace("*10", "e");
 	if(str.length>0&&isFinite(Number(str))){
+		updatePermalink(str, false);
 		var sfStr = str.replace(".", "").replace(/^0*/, "").replace(/e.*$/, "");
 		var sfNum = sfStr.length;
 		var num = new Decimal(str);
 		if(!isRunningUpdate){
 			if(num==0){
-				text2.innerHTML = "Please enter a non-zero value";
+				results.innerHTML = "Please enter a non-zero value";
 			} else {
 				isRunningUpdate = true;
 				flattenAllPromiseArrays(findCandidatesFor(num, 0, true)).then(exs=>displayResults(exs, num, true, Math.min(20, sfNum))).then(a=>MathJax.typeset());
@@ -25,14 +26,17 @@ function updateValue() {
 			shouldReRun = true;
 		}
 	}else{
-		text2.innerHTML = "Not a valid number";
+		results.innerHTML = "Not a valid number";
 	}
 }
 function updatePrecise(){
+	results.innerHTML = results.innerHTML.substring(0, results.innerHTML.length-53);
+	results.innerHTML += "Calculating...";
 	var str = input.value.replace("x", "*").replace("\u00D7", "*").replace("\u2062", "*");
 	str = str.replace(/\u2212/g, "-").replace(/\u002D/g, "-").replace(/\uFE63/g, "-").replace(/\uFF0D/g, "-");
 	str = str.replace(/ /g, "").replace(/,/g, "").replace("*10^", "*10").replace("*10", "e");
 	if(str.length>0&&isFinite(Number(str))){
+		updatePermalink(str, true);
 		var sfStr = str.replace(".", "").replace(/^0*/, "").replace(/e.*$/, "");
 		var sfNum = sfStr.length;
 		var num = new Decimal(str);
@@ -40,7 +44,7 @@ function updatePrecise(){
 		shouldReRun = false;
 		flattenAllPromiseArrays(findCandidatesFor(num, 1, true)).then(exs=>displayResults(exs, num, false, Math.min(20, sfNum))).then(a=>MathJax.typeset());
 	}else{
-		text2.innerHTML = "Not a valid number";
+		results.innerHTML = "Not a valid number";
 	}
 }
 
@@ -91,7 +95,7 @@ function displayResults(found, num, easy, sfNum){
 		ht2 += "<button onclick=\"updatePrecise()\">Try Harder</button>";
 	}
 
-	text2.innerHTML = ht2;
+	results.innerHTML = ht2;
 	var coll = document.getElementsByClassName("collapsible");
 	var i;
 
@@ -137,4 +141,52 @@ function _base64ToArrayBuffer(base64) {
     }
     return bytes;
 }
-updateValue(1);
+
+var url = window.location.href;
+if(url.includes("?")){
+	try{
+		url = url.match(/?.*/)[0];
+		var tryHarder = url.includes("try-harder");
+		var space = url.match(/space=[^&]*/);
+		if(space){
+			space = space[0].split('=')[1];
+		}else{
+			space = "normal";
+		}
+		var value = url.match(/value=[^&]*/)[0].split('=')[1];
+		value = value.replace("e", "\u00D710 ");
+		input.value = value;
+		targetFileSelector.value = space;
+		results.innerHTML = "Calculating...";
+		if(tryHarder){
+			updatePrecise(1);
+		}else{
+			updateValue(1);
+		}
+	} catch(e){
+		updateValue(1);
+	}
+}else{
+	updateValue(1);
+}
+function updatePermalink(numstr, tryHarder){
+	var numQuery = "value="+numstr;
+	var spaceQuery = "";
+	if(targetFileSelector.value!="normal"){
+		spaceQuery = "&"+targetFileSelector.value;
+	}
+	var tryQuery = "";
+	if(tryHarder){
+		tryQuery = "&try-harder";
+	}
+	document.getElementById("permalink").value = "https://www.not-entirely-wrong.com/approx/?"+numQuery+spaceQuery+tryQuery;
+}
+
+function copyPermalink(){
+	var target = document.getElementById("permalink");
+	target.select();
+	target.setSelectionRange(0, 99999);
+	document.execCommand("copy");
+}
+
+
