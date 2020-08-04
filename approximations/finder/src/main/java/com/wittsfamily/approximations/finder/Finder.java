@@ -7,10 +7,14 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.RandomAccessFile;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 import javax.swing.JFileChooser;
@@ -90,8 +94,8 @@ public class Finder {
         } else {
             number = args[numPos];
         }
-        number = number.replaceAll("[, ]", "").replaceAll("[-\u2212\u002D\uFE63\uFF0D]", "-").replaceAll("[*x\u2062]", "*").replaceFirst("\\*10\\^", "*10").replaceFirst("\\*10",
-                "e");
+        number = number.replaceAll("[, ]", "").replaceAll("[-\u2212\u002D\uFE63\uFF0D]", "-").replaceAll("[*x\u2062\u00D7]", "*").replaceFirst("\\*10\\^", "*10")
+                .replaceFirst("\\*10", "e");
         Apfloat target = new Apfloat(number, 50);
 
         int targetPos = -1;
@@ -125,7 +129,8 @@ public class Finder {
         int j = 0;
         System.out.println("target value: " + target);
         List<Expression> vals = f.findCandidateExpressions(target, depth, true);
-        List<String> laTeXStrs = new ArrayList<>();
+        List<ExpressionInfo> infos = new ArrayList<>();
+        Set<String> equivStrs = new HashSet<>();
         LaTeXExpressionRenderer lr = new LaTeXExpressionRenderer();
         UnicodeExpressionRenderer ur = new UnicodeExpressionRenderer();
         for (Expression value : vals) {
@@ -138,20 +143,39 @@ public class Finder {
             }
             CleaningExpression exp = cl.clean(value);
             String ltxStr = exp.render(lr);
-            System.out.println("LaTeX string: " + ltxStr);
-            System.out.println("Unicode string: " + exp.render(ur));
-            if (precision == ApfloatWithInf.INF) {
-                String text = target.toString(true) + "\\approx " + ltxStr + " \\\\\\text{To system precision (1/10^{50}, \\pm rounding error)}";
-                laTeXStrs.add(text);
-            } else if (precision.compareTo(new Apfloat(1000)) > 0) {
-                String text = target.toString(true) + "\\approx " + ltxStr + " \\\\\\text{To one part in: }";
-                Apfloat log10 = ApfloatMath.log(precision, new Apfloat(10, 10));
-                text = text + precision.divide(new Apfloat(Math.pow(10, log10.intValue()), 3)).toString() + "\\times 10^{" + log10.intValue() + "}";
-                laTeXStrs.add(text);
+            if (!equivStrs.contains(ltxStr)) {
+                equivStrs.add(ltxStr);
+                if (precision == ApfloatWithInf.INF) {
+                    String tgtStr = target.toString().replaceFirst("e", "\\\\times10^{");
+                    if (tgtStr.contains("{")) {
+                        tgtStr += "}";
+                    }
+                    String flStr = fl.toString().replaceFirst("e", "×10^");
+                    infos.add(new ExpressionInfo(tgtStr + "\\approx " + ltxStr, tgtStr.replace("\\\\times", "×").replaceAll("[{}]", "") + "≈" + exp.render(ur), value.toString(),
+                            "\\text{To system precision (1 part in 10^{50}, ± rounding error)}", flStr));
+                } else {
+                    String tgtStr = target.toString().replaceFirst("e", "\\\\times 10^{");
+                    if (tgtStr.contains("{")) {
+                        tgtStr += "}";
+                    }
+                    String flStr = fl.toString().replaceFirst("e", "×10^");
+                    Apfloat log10 = ApfloatMath.log(precision, new Apfloat(10, 10));
+                    infos.add(new ExpressionInfo(tgtStr + "\\approx " + ltxStr, tgtStr.replace("\\times", "×").replaceAll("[{}]", "") + "≈" + exp.render(ur), value.toString(),
+                            "\\text{To 1 part in }" + precision.divide(new Apfloat(Math.pow(10, log10.intValue()), 3)).toString() + "×10^{" + log10.intValue() + "}", flStr));
+                }
             }
         }
-        for (String text : laTeXStrs) {
-            toSVG(text, targetFile + "-" + j++, true);
+        System.out.println("found: " + infos.size() + " expressions");
+        for (ExpressionInfo info : infos) {
+            toSVG(info.getLaTeX() + "\\\\" + info.getPrecision().replaceAll("×", "\\\\times ").replace("±", "\\pm"), targetFile + "-" + j + "-rendered", true);
+            File infoFile = new File(targetFile + "-" + j++ + "-info");
+            RandomAccessFile writeFile = new RandomAccessFile(infoFile, "rw");
+            writeFile.write(("Actual value: " + info.getPreciseValue() + "\n").getBytes(StandardCharsets.UTF_8));
+            writeFile.write(("Precision: " + info.getPrecision().replaceAll("(\\\\text)|[{}]", "") + "\n").getBytes(StandardCharsets.UTF_8));
+            writeFile.write(("LaTeX form: " + info.getLaTeX() + "\n").getBytes(StandardCharsets.UTF_8));
+            writeFile.write(("Unicode form: " + info.getUnicode() + "\n").getBytes(StandardCharsets.UTF_8));
+            writeFile.write(("Uncleaned: " + info.getUncleaned() + "\n").getBytes(StandardCharsets.UTF_8));
+            writeFile.close();
         }
     }
 
