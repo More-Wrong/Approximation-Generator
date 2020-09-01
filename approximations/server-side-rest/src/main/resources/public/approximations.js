@@ -173,7 +173,7 @@ function updatePermalink(numstr, tryHarder){
 	var numQuery = "value="+numstr;
 	var spaceQuery = "";
 	if(targetFileSelector.value!="normal"){
-		spaceQuery = "&"+targetFileSelector.value;
+		spaceQuery = "&space="+targetFileSelector.value;
 	}
 	var tryQuery = "";
 	if(tryHarder){
